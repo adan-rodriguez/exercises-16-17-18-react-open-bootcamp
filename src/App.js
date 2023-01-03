@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import TaskPage from "./pages/TaskPage";
 
 function App() {
+  const [isUserLogged, setIsUserLogged] = useState(false);
+
+  const login = (username, password) => {
+    const user = JSON.parse(localStorage.getItem(username));
+    console.log(user);
+    setIsUserLogged(user?.password === password);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage login={login} />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/tasks"
+        element={isUserLogged ? <TaskPage /> : <Navigate to="/login" />}
+      />
+    </Routes>
   );
 }
 
